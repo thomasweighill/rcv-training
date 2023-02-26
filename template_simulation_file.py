@@ -18,14 +18,15 @@ import pandas as pd
 import compute_winners as cw
 from vote_transfers import cincinnati_transfer
 from model_details import Cambridge_ballot_type, BABABA, luce_dirichlet, bradley_terry_dirichlet
-
+random.seed(2023)
+np.random.seed(2023)
 
 ###-------- Global variables -- change these
 poc_share = 0.18
 poc_support_for_poc_candidates = 0.85
 white_support_for_poc_candidates = 0.06
 num_ballots = 100
-num_simulations = 10
+num_simulations = 20
 seats_open = 5
 num_poc_candidates = 3
 num_white_candidates = 5
@@ -87,7 +88,7 @@ for i, concentrations in enumerate(concentration_list):
   )
   poc_elected_bradley_terry_dirichlet.append(poc_elected_rcv)
 for i, s in enumerate(results):
-  results[s].append(np.mean(poc_elected_luce_dirichlet[i]))
+  results[s].append(np.mean(poc_elected_bradley_terry_dirichlet[i]))
 
 
 #Alternating crossover model
@@ -108,7 +109,7 @@ poc_elected_bababa,_  = BABABA(
 )
 for i, s in enumerate(scenarios_list):
   results[s].append(np.mean(poc_elected_bababa[s]))
-results['E'] = np.mean([np.mean(poc_elected_bababa[c]) for c in scenarios_list])
+results['E'].append(np.mean([np.mean(poc_elected_bababa[c]) for c in scenarios_list]))
 
 
 #Cambridge Sampler
@@ -128,7 +129,7 @@ poc_elected_Cambridge,_  = Cambridge_ballot_type(
 )
 for i, s in enumerate(scenarios_list):
   results[s].append(np.mean(poc_elected_Cambridge[s]))
-results['E'] = np.mean([np.mean(poc_elected_Cambridge[c]) for c in scenarios_list])
+results['E'].append(np.mean([np.mean(poc_elected_Cambridge[c]) for c in scenarios_list]))
 
 results['model'] = ['PL', 'BT', 'AC', 'CS']
 df = pd.DataFrame(results)

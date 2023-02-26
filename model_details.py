@@ -45,19 +45,22 @@ def Cambridge_ballot_type(
     sum_poc_first_probs = sum(poc_first_probs.values())
     poc_first_probs = {x:p/sum_poc_first_probs for x,p in poc_first_probs.items()}
 
+
     #consolidate to only prefixes that are valid based on number of candidates
     consolidated_probs = {}
-    for pref in set([x[:sum(num_candidates)] for x in white_first_probs.keys()]):
+    for pref in np.unique([x[:sum(num_candidates)] for x in white_first_probs.keys()]):
       consolidated_probs[pref] = sum(
           [white_first_probs[x] for x in white_first_probs if x[:sum(num_candidates)]==pref]
           )
     white_first_probs = consolidated_probs
     consolidated_probs = {}
-    for pref in set([x[:sum(num_candidates)] for x in poc_first_probs.keys()]):
+    for pref in np.unique([x[:sum(num_candidates)] for x in poc_first_probs.keys()]):
       consolidated_probs[pref] = sum(
           [poc_first_probs[x] for x in poc_first_probs if x[:sum(num_candidates)]==pref]
           )
     poc_first_probs = consolidated_probs
+
+
 
     for scenario in scenarios_to_run:
       for n in range(num_simulations):
@@ -242,7 +245,6 @@ def BABABA(
         if scenario in ['A','D']:
             return [poc_candidates+white_candidates]
         elif scenario == 'B':
-            x = random.sample(white_candidates, len(white_candidates))
             y = random.sample(poc_candidates, len(poc_candidates))
             return  [list(y)+white_candidates]
         else:
@@ -254,7 +256,6 @@ def BABABA(
         if scenario in ['A', 'D']:
             return [interleave(white_candidates, poc_candidates)]
         elif scenario == 'B':
-            x = random.sample(white_candidates, len(white_candidates))
             y = random.sample(poc_candidates, len(poc_candidates))
             return [interleave(white_candidates,y)]
         else:
